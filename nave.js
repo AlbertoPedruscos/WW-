@@ -1,0 +1,175 @@
+//nave
+document.addEventListener('DOMContentLoaded', function() {
+    const nave = document.querySelector('.nave');
+    const screenWidth = window.innerWidth;
+    const naveWidth = nave.clientWidth;
+    let movingLeft = false;
+    let movingRight = false;
+    let animationFrame;
+
+    function moveNave() {
+        const currentPosition = nave.offsetLeft;
+        if (movingLeft && currentPosition - naveWidth - 90 > 0) {
+            nave.style.left = currentPosition - 160 + 'px';
+        } else if (movingRight && currentPosition + naveWidth + 90 < screenWidth) {
+            nave.style.left = currentPosition + 160 + 'px';
+        }
+        animationFrame = requestAnimationFrame(moveNave);
+    }
+
+    function startMove(direction) {
+        if (direction === 'left') {
+            movingLeft = true;
+        } else if (direction === 'right') {
+            movingRight = true;
+        }
+        if (!animationFrame) {
+            animationFrame = requestAnimationFrame(moveNave);
+        }
+    }
+
+    function stopMove(direction) {
+        if (direction === 'left') {
+            movingLeft = false;
+        } else if (direction === 'right') {
+            movingRight = false;
+        }
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+    }
+
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+        if (key === 'a' || key === 'd') {
+            event.preventDefault();
+            startMove(key === 'a' ? 'left' : 'right');
+        }
+    });
+
+    document.addEventListener('keyup', function(event) {
+        const key = event.key;
+        if (key === 'a' || key === 'd') {
+            stopMove(key === 'a' ? 'left' : 'right');
+        }
+    });
+});
+
+
+//musica
+document.addEventListener('keydown', function(event) {
+    var tecla = event.key;
+    if (tecla === 'a' || tecla === 'A' || tecla === 'd' || tecla === 'D') {
+        var musica = document.getElementById('musica');
+        musica.play();
+    }
+});
+
+
+//enemigos
+
+document.addEventListener('DOMContentLoaded', function() {
+    function crearNuevaImagen() {
+        var imagen = document.createElement('img');
+        imagen.classList.add('imagen');
+        imagen.src = 'nave.webp'; // Cambia esto por la URL de tus imágenes
+        document.body.appendChild(imagen);
+        moverImagen(imagen);
+    }
+
+    function moverImagen(imagen) {
+        var ventanaAncho = window.innerWidth;
+        var ventanaAlto = window.innerHeight;
+
+        var direccion = Math.random() < 0.5 ? -1 : 1; // Dirección inicial aleatoria (-1 para izquierda, 1 para derecha)
+        var velocidad = Math.random() * 5 + 3; // Velocidad aleatoria entre 3 y 8 pixels por frame
+        var left = Math.random() * (ventanaAncho - 100); // Posición inicial aleatoria en la ventana
+
+        // Asegurarnos de que la posición inicial esté dentro de la ventana
+        if (left < 0) {
+            left = 0;
+        } else if (left > ventanaAncho - 100) {
+            left = ventanaAncho - 100;
+        }
+
+        imagen.style.left = left + 'px';
+        imagen.style.display = 'block';
+
+        function mover() {
+            var leftActual = parseFloat(imagen.style.left);
+            if (leftActual <= 0 || leftActual >= ventanaAncho - 100) {
+                // Cambiar la dirección si la imagen está a punto de salir de la ventana
+                direccion *= -1; // Invertir la dirección
+            }
+            imagen.style.left = (leftActual + velocidad * direccion) + 'px';
+        }
+
+        var intervalo = setInterval(mover, 50); // Mover la imagen cada 50 ms (20 cuadros por segundo)
+    }
+
+    function mostrarImagenes() {
+        var imagenes = document.querySelectorAll('.imagen');
+        var numImagenes = imagenes.length;
+        var numImagenesAMostrar = Math.floor(Math.random() * (5 - numImagenes)) + 1;
+
+        // Mostrar nuevas imágenes
+        for (var i = 0; i < numImagenesAMostrar; i++) {
+            if (numImagenes + i >= 5) {
+                break; // Detener el bucle si ya hay 5 imágenes en la página
+            }
+            crearNuevaImagen();
+        }
+    }
+
+    // Mostrar imágenes cada 10 segundos
+    setInterval(mostrarImagenes, 10000);
+
+    // Mostrar imágenes al cargar la página
+    mostrarImagenes();
+});
+
+/* document.addEventListener("DOMContentLoaded", function() {
+    let container = document.body;
+    let cooldown = false;
+  
+    function createImage() {
+      if (!cooldown) {
+        let img = document.createElement('img');
+        img.src = 'misil.png'; // Reemplaza 'misil.png' con la ruta de tu imagen
+        img.classList.add('scrolling-img');
+        container.appendChild(img);
+  
+        let cazaElement = document.querySelector('#caza');
+        let startPos = cazaElement.getBoundingClientRect().bottom; // Posición inicial: parte inferior del elemento 'caza'
+        let endPos = -img.clientHeight; // Posición final: parte superior del body
+        
+        img.style.bottom = startPos + 'px'; // Configura la posición inicial
+  
+        // Inicia la animación
+        img.animate([
+          { bottom: startPos + 'px' },
+          { bottom: endPos + 'px' }
+        ], {
+          duration: 1500, // Duración de la animación en milisegundos (1.5 segundos)
+          easing: 'linear',
+          fill: 'forwards' // Mantener la posición final después de la animación
+        });
+  
+        setTimeout(function() {
+          cooldown = false;
+          img.remove();
+        }, 1500); // La imagen se quitará después de 1.5 segundos
+  
+        cooldown = true;
+      }
+    }
+  
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        createImage();
+      }
+    });
+  });
+  
+  
+  
+   */

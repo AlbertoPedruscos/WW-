@@ -1,0 +1,53 @@
+body{
+    height: 100vh; /* Altura del viewport */
+    background-image: url(mar.jpg);
+    background-size: cover;
+    background-position: center;
+    -webkit-background-size: cover; /* Para navegadores WebKit (Safari, Chrome) */
+    -moz-background-size: cover; /* Para navegadores Gecko (Firefox) */
+    -o-background-size: cover; /* Para Opera */
+    overflow-x: hidden;
+    overflow-y: hidden;
+
+}
+.nave {
+    width: 30vh;
+    position: absolute;
+    top: 90%; /* Ajusta la posición vertical según sea necesario */
+    left: 50%; /* Ajusta la posición horizontal según sea necesario */
+    transform: translate(-50%, -50%); /* Centra la imagen */
+    transition: left 0.3s ease; /* Animación suave */
+}
+.imagen {
+    width: 20vh;
+    position: fixed;
+    top: 0;
+    display: none; /* Las imágenes estarán ocultas al principio */
+    transform: rotate(180deg); /* Rotar la imagen 180 grados */
+}
+.play-button {
+    background-color: #ff0000;
+    border: none;
+    border-radius: 5%;
+    color: white;
+    font-size: 3rem;
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.play-button:hover {
+    background-color: #cc0000;
+    transform: scale(1.1);
+}
+
+.play-button:focus {
+    outline: none;
+}
+.play-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
