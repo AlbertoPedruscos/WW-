@@ -1,3 +1,58 @@
+// Función para simular pulsación de tecla "A"
+function simulateKeyPressA() {
+    const eventDown = new KeyboardEvent('keydown', {
+        key: 'a',
+        keyCode: 65,
+        which: 65,
+        code: 'KeyA'
+    });
+    const eventUp = new KeyboardEvent('keyup', {
+        key: 'a',
+        keyCode: 65,
+        which: 65,
+        code: 'KeyA'
+    });
+    document.dispatchEvent(eventDown);
+    setTimeout(function() {
+        document.dispatchEvent(eventUp);
+    }, 200); // Simula una pulsación mantenida de 200 milisegundos
+}
+
+// Función para simular pulsación de tecla "D"
+function simulateKeyPressD() {
+    const eventDown = new KeyboardEvent('keydown', {
+        key: 'd',
+        keyCode: 68,
+        which: 68,
+        code: 'KeyD'
+    });
+    const eventUp = new KeyboardEvent('keyup', {
+        key: 'd',
+        keyCode: 68,
+        which: 68,
+        code: 'KeyD'
+    });
+    document.dispatchEvent(eventDown);
+    setTimeout(function() {
+        document.dispatchEvent(eventUp);
+    }, 200); // Simula una pulsación mantenida de 200 milisegundos
+}
+
+// Obtener referencias a los botones
+const buttonL = document.getElementById('buttonL');
+const buttonR = document.getElementById('buttonR');
+
+// Agregar eventos de mousedown y mouseup al botón "L"
+buttonL.addEventListener('mousedown', function() {
+    // Simular pulsación de tecla "A"
+    simulateKeyPressA();
+});
+
+// Agregar eventos de mousedown y mouseup al botón "R"
+buttonR.addEventListener('mousedown', function() {
+    // Simular pulsación de tecla "D"
+    simulateKeyPressD();
+});
 //nave
 document.addEventListener('DOMContentLoaded', function() {
     const nave = document.querySelector('.nave');
@@ -8,11 +63,23 @@ document.addEventListener('DOMContentLoaded', function() {
     let animationFrame;
 
     function moveNave() {
+        var porcentajeDecimal = 20 / 100;
+        var porcentajeDecimal2 = 4 / 100;
+
+        // Obtener el ancho del contenedor
+        var pantallaAncho = window.innerWidth;
+        var pantallaAncho2 = window.innerWidth;
+    
+        // Calcular los píxeles
+        var pxeles = porcentajeDecimal * pantallaAncho;
+        var pxeles2 = porcentajeDecimal2 * pantallaAncho2;
+
+
         const currentPosition = nave.offsetLeft;
-        if (movingLeft && currentPosition - naveWidth - 90 > 0) {
-            nave.style.left = currentPosition - 160 + 'px';
-        } else if (movingRight && currentPosition + naveWidth + 90 < screenWidth) {
-            nave.style.left = currentPosition + 160 + 'px';
+        if (movingLeft && currentPosition - naveWidth - pxeles2 > 0) {
+            nave.style.left = currentPosition - pxeles + 'px';
+        } else if (movingRight && currentPosition + naveWidth + pxeles2 < screenWidth) {
+            nave.style.left = currentPosition + pxeles + 'px';
         }
         animationFrame = requestAnimationFrame(moveNave);
     }
