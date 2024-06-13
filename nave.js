@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function moveNave() {
         const porcentajeDecimal = 10 / 100;
-        const porcentajeDecimal2 = 20 / 100;
+        const porcentajeDecimal2 = 10 / 100;
 
         const pantallaAncho = window.innerWidth;
         const pxeles = porcentajeDecimal * pantallaAncho;
