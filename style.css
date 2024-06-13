@@ -1,5 +1,6 @@
 body{
-    height: 100vh; /* Altura del viewport */
+    height: 96vh;
+    width: 100%;
     background-image: url(mar.jpg);
     background-size: cover;
     background-position: center;
@@ -8,7 +9,6 @@ body{
     -o-background-size: cover; /* Para Opera */
     overflow-x: hidden;
     overflow-y: hidden;
-
 }
 .nave {
     width: 30vh;
@@ -17,6 +17,7 @@ body{
     left: 50%; /* Ajusta la posición horizontal según sea necesario */
     transform: translate(-50%, -50%); /* Centra la imagen */
     transition: left 0.3s ease; /* Animación suave */
+    z-index: 10;
 }
 .imagen {
     width: 20vh;
@@ -52,14 +53,14 @@ body{
     width: 100%;
 }
 .bottom-div {
-    background-image: url(guerra.webp);
+    background-image: url(madera.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     position: absolute;
     bottom: 0;
     left: 50%; /* Centrar horizontalmente */
     transform: translateX(-50%); /* Centrar horizontalmente */
-    width: 100%; /* Ancho deseado */
+    width: 99%; /* Ancho deseado */
     background-color: lightgray;
     padding: 10px;
     display: flex; /* Utilizar flexbox para centrar los botones */
@@ -67,6 +68,8 @@ body{
     align-items: center; /* Centrar verticalmente */
     text-align: center; 
     display: none;
+    padding-bottom: 2%;
+    margin-bottom: 5%;
 }
 
 .button {
@@ -87,24 +90,48 @@ body{
 }
 
 .button.secondary {
-    background-color: #e88d26;
+    background-color: #e82626;
 }
 
 /* Estilo al pasar el ratón sobre el segundo botón */
 .button.secondary:hover {
-    background-color: #c9ba7a;
+    background-color: #7c0e0e;
+}
+
+.animated-element {
+    position: absolute;
+    width: 10vh;
+    height: 20vh;
+    z-index: 1;
+}
+
+.explosion {
+    position: absolute;
+    width: 20vh;
+    height: 20vh;
 }
 
 
 @media only screen and (max-width: 768px) {
     .nave{
         width: 15vh;
-        top: 85%;
+        top: 80%;
     }
     .imagen{
         width: 12vh;
     }
     .bottom-div {
         display: block;
+    }
+    .explosion {
+        position: absolute;
+        width: 10vh;
+        height: 10vh;
+    }
+    .animated-element {
+        position: absolute;
+        width: 5vh;
+        height: 10vh;
+        z-index: 1;
     }
 }

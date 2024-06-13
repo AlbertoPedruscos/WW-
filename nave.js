@@ -53,6 +53,21 @@ buttonR.addEventListener('mousedown', function() {
     // Simular pulsación de tecla "D"
     simulateKeyPressD();
 });
+document.addEventListener('DOMContentLoaded', function() {
+    var buttonD = document.getElementById('buttonD');
+
+    buttonD.addEventListener('click', function() {
+        // Simular presionar Enter
+        var event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            keyCode: 13,
+            which: 13,
+            bubbles: true,
+            cancelable: true
+        });
+        document.dispatchEvent(event);
+    });
+});
 //nave
 document.addEventListener('DOMContentLoaded', function() {
     const nave = document.querySelector('.nave');
@@ -125,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 //musica
 document.addEventListener('keydown', function(event) {
     var tecla = event.key;
-    if (tecla === 'a' || tecla === 'A' || tecla === 'd' || tecla === 'D') {
+    if (tecla === 'a' || tecla === 'A' || tecla === 'd' || tecla === 'D' || tecla === 'Enter') {
         var musica = document.getElementById('musica');
         musica.play();
     }
@@ -133,7 +148,6 @@ document.addEventListener('keydown', function(event) {
 
 
 //enemigos
-
 document.addEventListener('DOMContentLoaded', function() {
     function crearNuevaImagen() {
         var imagen = document.createElement('img');
@@ -170,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
             imagen.style.left = (leftActual + velocidad * direccion) + 'px';
         }
 
-        var intervalo = setInterval(mover, 50); // Mover la imagen cada 50 ms (20 cuadros por segundo)
+        setInterval(mover, 50); // Mover la imagen cada 50 ms (20 cuadros por segundo)
     }
 
     function mostrarImagenes() {
@@ -194,49 +208,126 @@ document.addEventListener('DOMContentLoaded', function() {
     mostrarImagenes();
 });
 
-/* document.addEventListener("DOMContentLoaded", function() {
-    let container = document.body;
-    let cooldown = false;
-  
-    function createImage() {
-      if (!cooldown) {
-        let img = document.createElement('img');
-        img.src = 'misil.png'; // Reemplaza 'misil.png' con la ruta de tu imagen
-        img.classList.add('scrolling-img');
-        container.appendChild(img);
-  
-        let cazaElement = document.querySelector('#caza');
-        let startPos = cazaElement.getBoundingClientRect().bottom; // Posición inicial: parte inferior del elemento 'caza'
-        let endPos = -img.clientHeight; // Posición final: parte superior del body
-        
-        img.style.bottom = startPos + 'px'; // Configura la posición inicial
-  
-        // Inicia la animación
-        img.animate([
-          { bottom: startPos + 'px' },
-          { bottom: endPos + 'px' }
-        ], {
-          duration: 1500, // Duración de la animación en milisegundos (1.5 segundos)
-          easing: 'linear',
-          fill: 'forwards' // Mantener la posición final después de la animación
-        });
-  
-        setTimeout(function() {
-          cooldown = false;
-          img.remove();
-        }, 1500); // La imagen se quitará después de 1.5 segundos
-  
+//misil
+document.addEventListener("DOMContentLoaded", function() {
+    var staticElement = document.getElementById("caza");
+    var cooldown = false;
+
+    function createAndAnimateImage() {
+        if (cooldown) return;
+
+        // Obtener la posición del elemento estático dinámicamente
+        var staticElementRect = staticElement.getBoundingClientRect();
+        var staticElementTop = staticElementRect.top;
+        var staticElementLeft = staticElementRect.left;
+        var staticElementWidth = staticElementRect.width;
+        var staticElementHeight = staticElementRect.height;
+
+        // Calcular el centro del elemento estático
+        var centerX = staticElementLeft + staticElementWidth / 2;
+        var centerY = staticElementTop + staticElementHeight / 2;
+
         cooldown = true;
-      }
+
+        // Crear el elemento img
+        var animatedElement = document.createElement("img");
+        animatedElement.src = "misil.png"; // Reemplaza con la ruta de tu imagen
+        animatedElement.className = "animated-element";
+        animatedElement.style.top = (centerY - 25) + 'px'; // Ajustar según el tamaño de la imagen
+        animatedElement.style.left = (centerX - 25) + 'px'; // Ajustar según el tamaño de la imagen
+        document.body.appendChild(animatedElement);
+
+        // Animar el elemento desde su posición inicial hacia arriba
+        var endPosition = -100; // Termina fuera de la pantalla
+        var duration = 2000; // Duración de la animación en milisegundos (2 segundos)
+
+        function checkCollision(element1, element2, threshold = 10) {
+            var rect1 = element1.getBoundingClientRect();
+            var rect2 = element2.getBoundingClientRect();
+
+            return !(rect1.right < rect2.left + threshold ||
+                     rect1.left > rect2.right - threshold ||
+                     rect1.bottom < rect2.top + threshold ||
+                     rect1.top > rect2.bottom - threshold);
+        }
+
+        function showExplosion(x, y) {
+            // Función para reproducir el audio
+            function reproducirAudio() {
+                var audioElement = document.getElementById("miAudio");
+
+                // Verificar si el elemento de audio ya existe
+                if (!audioElement) {
+                    console.error('Elemento de audio no encontrado');
+                    return;
+                }
+
+                // Clonar el elemento de audio para crear una nueva instancia
+                var newAudioElement = audioElement.cloneNode(true);
+
+                // Establecer el tiempo de inicio en 0 para reiniciar la reproducción
+                newAudioElement.currentTime = 0;
+
+                // Reproducir el audio clonado
+                newAudioElement.play();
+            }
+
+            // Llamar a la función cada vez que se desee reproducir el audio acumulado
+            reproducirAudio();
+
+            var explosion = document.createElement("img");
+            explosion.src = "explosion.webp"; // Reemplaza con la ruta de tu imagen de explosión
+            explosion.className = "explosion";
+            explosion.style.top = y + 'px';
+            explosion.style.left = x + 'px';
+            document.body.appendChild(explosion);
+
+            setTimeout(function() {
+                explosion.remove();
+            }, 1000); // Eliminar la explosión después de 1 segundo
+        }
+
+        function animate() {
+            var start = null;
+            function step(timestamp) {
+                if (!start) start = timestamp;
+                var progress = timestamp - start;
+                var currentPosition = (centerY - 25) - ((centerY - 25) - endPosition) * (progress / duration);
+                animatedElement.style.top = currentPosition + 'px';
+
+                // Verificar colisión con enemigos
+                var enemigos = document.querySelectorAll('.imagen');
+                enemigos.forEach(function(enemigo) {
+                    if (checkCollision(animatedElement, enemigo)) {
+                        var enemigoRect = enemigo.getBoundingClientRect();
+                        var enemigoCenterX = enemigoRect.left + enemigoRect.width / 2;
+                        var enemigoCenterY = enemigoRect.top + enemigoRect.height / 2;
+
+                        enemigo.remove(); // Eliminar el enemigo si colisiona con el misil
+                        animatedElement.remove(); // Eliminar el misil después de la colisión
+                        showExplosion(enemigoCenterX - 50, enemigoCenterY - 50); // Mostrar explosión centrada
+                        cooldown = false; // Resetear el cooldown después de la colisión
+                    }
+                });
+
+                if (progress < duration) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    animatedElement.style.top = endPosition + 'px'; // Asegurar la posición final
+                    animatedElement.remove(); // Eliminar el elemento cuando termina la animación
+                    cooldown = false; // Resetear el cooldown después de 2 segundos
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        animate();
     }
-  
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        createImage();
-      }
+
+    // Evento para detectar la tecla Enter
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            createAndAnimateImage();
+        }
     });
-  });
-  
-  
-  
-   */
+});
