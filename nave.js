@@ -1,3 +1,11 @@
+let puntosT = 0;
+
+// Function to update points and display them
+function puntos(puntos) {
+    puntosT = puntosT + puntos;
+    document.getElementById('puntos').innerHTML = "Puntuación: " + puntosT + " puntos";
+}
+
 // Función para simular pulsación de tecla "A"
 function simulateKeyPressA() {
     const eventDown = new KeyboardEvent('keydown', {
@@ -68,33 +76,38 @@ document.addEventListener('DOMContentLoaded', function() {
         document.dispatchEvent(event);
     });
 });
+
+//musica
+document.addEventListener('keydown', function(event) {
+    var tecla = event.key;
+    if (tecla === 'a' || tecla === 'A' || tecla === 'd' || tecla === 'D' || tecla === 'Enter') {
+        var musica = document.getElementById('musica');
+        musica.play();
+    }
+});
+
 //nave
 document.addEventListener('DOMContentLoaded', function() {
-    const nave = document.querySelector('.nave');
+    const naveJugador = document.querySelector('.nave');
     const screenWidth = window.innerWidth;
-    const naveWidth = nave.clientWidth;
+    const naveWidth = naveJugador.clientWidth;
     let movingLeft = false;
     let movingRight = false;
     let animationFrame;
 
     function moveNave() {
-        var porcentajeDecimal = 20 / 100;
-        var porcentajeDecimal2 = 4 / 100;
+        const porcentajeDecimal = 20 / 100;
+        const porcentajeDecimal2 = 20 / 100;
 
-        // Obtener el ancho del contenedor
-        var pantallaAncho = window.innerWidth;
-        var pantallaAncho2 = window.innerWidth;
-    
-        // Calcular los píxeles
-        var pxeles = porcentajeDecimal * pantallaAncho;
-        var pxeles2 = porcentajeDecimal2 * pantallaAncho2;
+        const pantallaAncho = window.innerWidth;
+        const pxeles = porcentajeDecimal * pantallaAncho;
+        const pxeles2 = porcentajeDecimal2 * pantallaAncho;
 
-
-        const currentPosition = nave.offsetLeft;
+        const currentPosition = naveJugador.offsetLeft;
         if (movingLeft && currentPosition - naveWidth - pxeles2 > 0) {
-            nave.style.left = currentPosition - pxeles + 'px';
+            naveJugador.style.left = currentPosition - pxeles + 'px';
         } else if (movingRight && currentPosition + naveWidth + pxeles2 < screenWidth) {
-            nave.style.left = currentPosition + pxeles + 'px';
+            naveJugador.style.left = currentPosition + pxeles + 'px';
         }
         animationFrame = requestAnimationFrame(moveNave);
     }
@@ -134,70 +147,116 @@ document.addEventListener('DOMContentLoaded', function() {
             stopMove(key === 'a' ? 'left' : 'right');
         }
     });
-});
 
-
-//musica
-document.addEventListener('keydown', function(event) {
-    var tecla = event.key;
-    if (tecla === 'a' || tecla === 'A' || tecla === 'd' || tecla === 'D' || tecla === 'Enter') {
-        var musica = document.getElementById('musica');
-        musica.play();
-    }
-});
-
-
-//enemigos
-document.addEventListener('DOMContentLoaded', function() {
-    function crearNuevaImagen() {
-        var imagen = document.createElement('img');
-        imagen.classList.add('imagen');
-        imagen.src = 'nave.webp'; // Cambia esto por la URL de tus imágenes
-        document.body.appendChild(imagen);
-        moverImagen(imagen);
-    }
-
-    function moverImagen(imagen) {
-        var ventanaAncho = window.innerWidth;
-        var ventanaAlto = window.innerHeight;
-
-        var direccion = Math.random() < 0.5 ? -1 : 1; // Dirección inicial aleatoria (-1 para izquierda, 1 para derecha)
-        var velocidad = Math.random() * 5 + 3; // Velocidad aleatoria entre 3 y 8 pixels por frame
-        var left = Math.random() * (ventanaAncho - 100); // Posición inicial aleatoria en la ventana
-
-        // Asegurarnos de que la posición inicial esté dentro de la ventana
-        if (left < 0) {
-            left = 0;
-        } else if (left > ventanaAncho - 100) {
-            left = ventanaAncho - 100;
+    // Clase para representar una nave enemiga
+    class NaveEnemiga {
+        constructor() {
+            this.nave = document.createElement('img');
+            this.nave.classList.add('imagen');
+            this.nave.src = 'nave.webp'; // Cambia esto por la URL de tus imágenes de nave enemiga
+            document.body.appendChild(this.nave);
+            this.mover();
+            this.intervalId = null;
+            this.proyectilIntervalId = null;
+            this.destruida = false;
         }
 
-        imagen.style.left = left + 'px';
-        imagen.style.display = 'block';
+        // Método para mover la nave enemiga
+        mover() {
+            const ventanaAncho = window.innerWidth;
+            let direccion = Math.random() < 0.5 ? -1 : 1;
+            const velocidad = Math.random() * 5 + 3;
+            let left = Math.random() * (ventanaAncho - 100);
 
-        function mover() {
-            var leftActual = parseFloat(imagen.style.left);
-            if (leftActual <= 0 || leftActual >= ventanaAncho - 100) {
-                // Cambiar la dirección si la imagen está a punto de salir de la ventana
-                direccion *= -1; // Invertir la dirección
+            if (left < 0) {
+                left = 0;
+            } else if (left > ventanaAncho - 100) {
+                left = ventanaAncho - 100;
             }
-            imagen.style.left = (leftActual + velocidad * direccion) + 'px';
+
+            this.nave.style.left = left + 'px';
+            this.nave.style.display = 'block';
+
+            // Lanzar un proyectil cada 2 segundos desde esta nave
+            this.proyectilIntervalId = setInterval(() => {
+                if (!this.destruida) {
+                    this.lanzarProyectil();
+                }
+            }, 2000);
+
+            // Mover la nave de manera aleatoria
+            this.intervalId = setInterval(() => {
+                const leftActual = parseFloat(this.nave.style.left);
+                if (leftActual <= 0 || leftActual >= ventanaAncho - 100) {
+                    direccion *= -1;
+                }
+                this.nave.style.left = (leftActual + velocidad * direccion) + 'px';
+            }, 50);
         }
 
-        setInterval(mover, 50); // Mover la imagen cada 50 ms (20 cuadros por segundo)
+        // Método para lanzar proyectiles desde la nave enemiga
+        lanzarProyectil() {
+            if (!this.destruida) {
+                var proyectil = document.createElement('img');
+                proyectil.classList.add('proyectil');
+                proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
+                proyectil.style.position = 'absolute';
+                proyectil.style.left = (this.nave.offsetLeft + this.nave.clientWidth / 2 - 10) + 'px'; // Centrado horizontalmente
+                proyectil.style.top = (this.nave.offsetTop + this.nave.clientHeight) + 'px'; // Desde la parte inferior de la nave
+                document.body.appendChild(proyectil);
+
+                function moverProyectil() {
+                    var topActual = parseFloat(proyectil.style.top);
+                    proyectil.style.top = (topActual + 5) + 'px'; // Velocidad del proyectil
+
+                    // Eliminar el proyectil si sale de la pantalla
+                    if (topActual > window.innerHeight) {
+                        proyectil.remove();
+                        clearInterval(intervalId);
+                    }
+                }
+
+                var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
+            }
+        }
+
+        // Método para destruir la nave enemiga
+        destruir() {
+            this.destruida = true;
+            clearInterval(this.intervalId); // Detener el movimiento de la nave
+            clearInterval(this.proyectilIntervalId); // Detener el lanzamiento de proyectiles
+            this.nave.remove(); // Eliminar la nave de la pantalla
+            setTimeout(() => {
+                this.respawn(); // Respawnear la nave después de cierto tiempo
+            }, 5000); // Respawnear después de 5 segundos (ajustar según sea necesario)
+        }
+
+        // Método para respawnear la nave enemiga
+        respawn() {
+            this.destruida = false;
+            this.nave = document.createElement('img');
+            this.nave.classList.add('imagen');
+            this.nave.src = 'nave.webp'; // Cambia esto por la URL de tus imágenes de nave enemiga
+            document.body.appendChild(this.nave);
+            this.mover();
+        }
     }
 
+    // Función para crear una nueva nave enemiga
+    function crearNuevaNaveEnemiga() {
+        var naveEnemiga = new NaveEnemiga();
+        return naveEnemiga;
+    }
+
+    // Función para mostrar imágenes de enemigos
     function mostrarImagenes() {
-        var imagenes = document.querySelectorAll('.imagen');
-        var numImagenes = imagenes.length;
-        var numImagenesAMostrar = Math.floor(Math.random() * (5 - numImagenes)) + 1;
+        var numImagenesAMostrar = Math.floor(Math.random() * 5) + 1;
 
-        // Mostrar nuevas imágenes
         for (var i = 0; i < numImagenesAMostrar; i++) {
-            if (numImagenes + i >= 5) {
-                break; // Detener el bucle si ya hay 5 imágenes en la página
+            if (document.querySelectorAll('.imagen').length >= 5) {
+                break;
             }
-            crearNuevaImagen();
+            crearNuevaNaveEnemiga();
         }
     }
 
@@ -206,7 +265,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mostrar imágenes al cargar la página
     mostrarImagenes();
+
+    // Evento para detectar colisión con la nave del jugador
+    function detectarColision() {
+        var proyectiles = document.querySelectorAll('.proyectil');
+        proyectiles.forEach(function(proyectil) {
+            var proyectilRect = proyectil.getBoundingClientRect();
+            var naveRect = naveJugador.getBoundingClientRect();
+
+            if (
+                proyectilRect.left < naveRect.right &&
+                proyectilRect.right > naveRect.left &&
+                proyectilRect.top < naveRect.bottom &&
+                proyectilRect.bottom > naveRect.top
+            ) {
+
+                window.location.href = "derrota.html";
+
+            }
+        });
+    }
+
+    setInterval(detectarColision, 20); // Verificar colisión cada 20 ms
 });
+
 
 //misil
 document.addEventListener("DOMContentLoaded", function() {
@@ -274,6 +356,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Llamar a la función cada vez que se desee reproducir el audio acumulado
             reproducirAudio();
+
+            puntos(100);
 
             var explosion = document.createElement("img");
             explosion.src = "explosion.webp"; // Reemplaza con la ruta de tu imagen de explosión
