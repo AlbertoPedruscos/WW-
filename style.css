@@ -1,6 +1,6 @@
 body{
     height: 96vh;
-    width: 100%;
+    width: 98%;
     background-image: url(mar.jpg);
     background-size: cover;
     background-position: center;
@@ -69,7 +69,7 @@ body{
     text-align: center; 
     display: none;
     padding-bottom: 2%;
-    margin-bottom: 5%;
+    margin-bottom: -4%;
 }
 
 .button {
@@ -115,7 +115,7 @@ body{
 @media only screen and (max-width: 768px) {
     .nave{
         width: 15vh;
-        top: 80%;
+        top: 84%;
     }
     .imagen{
         width: 12vh;
