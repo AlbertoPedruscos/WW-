@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let animationFrame;
 
     function moveNave() {
-        const porcentajeDecimal = 20 / 100;
+        const porcentajeDecimal = 10 / 100;
         const porcentajeDecimal2 = 20 / 100;
 
         const pantallaAncho = window.innerWidth;
