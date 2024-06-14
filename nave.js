@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const factorEscala = ventanaAncho / referenciaAncho; // Inverso del factor de escala
         
             let direccion = Math.random() < 0.5 ? -1 : 1;
-            const velocidad = (Math.random() * 5 + 3) * factorEscala; // Ajustamos la velocidad según el factor de escala
+            const velocidad = (Math.random() * 5 + 8) * factorEscala; // Ajustamos la velocidad según el factor de escala
         
             let left = Math.random() * (ventanaAncho - 100);
         
@@ -474,7 +474,7 @@ class EnemigoUnico {
         const factorEscala = ventanaAncho / referenciaAncho; // Inverso del factor de escala
     
         let direccion = Math.random() < 0.5 ? -1 : 1;
-        const velocidad = 4 * factorEscala; // Ajustamos la velocidad según el factor de escala
+        const velocidad = 6 * factorEscala; // Ajustamos la velocidad según el factor de escala
     
         let left = Math.random() * (ventanaAncho - 100);
     
