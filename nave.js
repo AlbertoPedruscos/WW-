@@ -190,29 +190,32 @@ document.addEventListener('DOMContentLoaded', function() {
             this.destruida = false;
         }
 
-        // Método para mover la nave enemiga
         mover() {
             const ventanaAncho = window.innerWidth;
+            const referenciaAncho = 1920; // Ancho de referencia para la resolución Full HD
+            const factorEscala = referenciaAncho / ventanaAncho; // Inverso del factor de escala
+        
             let direccion = Math.random() < 0.5 ? -1 : 1;
-            const velocidad = Math.random() * 5 + 3;
+            const velocidad = (Math.random() * 5 + 3) * factorEscala; // Ajustamos la velocidad según el factor de escala
+        
             let left = Math.random() * (ventanaAncho - 100);
-
+        
             if (left < 0) {
                 left = 0;
             } else if (left > ventanaAncho - 100) {
                 left = ventanaAncho - 100;
             }
-
+        
             this.nave.style.left = left + 'px';
             this.nave.style.display = 'block';
-
+        
             // Lanzar un proyectil cada 2 segundos desde esta nave
             this.proyectilIntervalId = setInterval(() => {
                 if (!this.destruida) {
                     this.lanzarProyectil();
                 }
             }, 2000);
-
+        
             // Mover la nave de manera aleatoria
             this.intervalId = setInterval(() => {
                 const leftActual = parseFloat(this.nave.style.left);
@@ -222,6 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.nave.style.left = (leftActual + velocidad * direccion) + 'px';
             }, 50);
         }
+        
 
         // Método para lanzar proyectiles desde la nave enemiga
         lanzarProyectil() {
@@ -466,19 +470,30 @@ class EnemigoUnico {
     // Método para mover la nave enemiga
     mover() {
         const ventanaAncho = window.innerWidth;
+        const referenciaAncho = 1920; // Ancho de referencia para la resolución Full HD
+        const factorEscala = referenciaAncho / ventanaAncho; // Inverso del factor de escala
+    
         let direccion = Math.random() < 0.5 ? -1 : 1;
-        const velocidad = Math.random() * 5 + 3;
+        const velocidad = 4 * factorEscala; // Ajustamos la velocidad según el factor de escala
+    
         let left = Math.random() * (ventanaAncho - 100);
-
+    
         if (left < 0) {
             left = 0;
         } else if (left > ventanaAncho - 100) {
             left = ventanaAncho - 100;
         }
-
+    
         this.nave.style.left = left + 'px';
         this.nave.style.display = 'block';
-
+    
+        // Lanzar un proyectil cada 2 segundos desde esta nave
+        this.proyectilIntervalId = setInterval(() => {
+            if (!this.destruida) {
+                this.lanzarProyectil();
+            }
+        }, 2000);
+    
         // Mover la nave de manera aleatoria
         this.intervalId = setInterval(() => {
             const leftActual = parseFloat(this.nave.style.left);
