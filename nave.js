@@ -4,7 +4,36 @@ let puntosT = 0;
 function puntos(puntos) {
     puntosT = puntosT + puntos;
     document.getElementById('puntos').innerHTML = "Puntuación: " + puntosT + " puntos";
+    
+    if (puntosT==3000) {
+        // Detener la música cuando se alcanzan 100 puntos
+        var musica = document.getElementById('musica');
+        musica.pause();
+        musica.currentTime = 0; // Reiniciar la música al principio
+        musica.remove(); // Eliminar completamente el elemento de música del DOM
+
+        var musica2 = document.getElementById('musica2');
+        musica2.play();
+        crearEnemigoUnico();
+    }
+    else if (puntosT==5000){
+        window.location.href = "victoria.html";
+    }
 }
+
+function ejecutarCada5Segundos() {
+    // Aquí va tu condición original
+    if (puntosT > 2900 && puntosT < 5000) {
+        for (let index = 0; index < 1; index++) {
+            crearEnemigoUnico();
+        }
+    }
+}
+
+// Ejecutar la función inicialmente y luego cada 5 segundos
+ejecutarCada5Segundos(); // Ejecutar primero sin esperar los 5 segundos
+
+setInterval(ejecutarCada5Segundos, 5000); 
 
 // Función para simular pulsación de tecla "A"
 function simulateKeyPressA() {
@@ -96,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let animationFrame;
 
     function moveNave() {
-        const porcentajeDecimal = 10 / 100;
-        const porcentajeDecimal2 = 10 / 100;
+        const porcentajeDecimal = 8 / 100;
+        const porcentajeDecimal2 = 8 / 100;
 
         const pantallaAncho = window.innerWidth;
         const pxeles = porcentajeDecimal * pantallaAncho;
@@ -415,3 +444,136 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+
+// Clase para representar una nave enemiga única
+// Clase para representar una nave enemiga única
+class EnemigoUnico {
+    constructor() {
+        this.nave = document.createElement('img');
+        this.nave.classList.add('imagen');
+        this.nave.src = 'nave.png'; // Cambia esto por la URL de la imagen de tu enemigo único
+        document.body.appendChild(this.nave);
+        this.mover();
+        this.intervalId = null;
+        this.proyectilIntervalId = null;
+        this.destruida = false;
+        this.golpesRecibidos = 0; // Contador de golpes recibidos
+        this.collisionCooldown = false; // Flag para manejar el cooldown de colisión
+        this.disparar(); // Iniciar disparos al crear la nave
+    }
+
+    // Método para mover la nave enemiga
+    mover() {
+        const ventanaAncho = window.innerWidth;
+        let direccion = Math.random() < 0.5 ? -1 : 1;
+        const velocidad = Math.random() * 5 + 3;
+        let left = Math.random() * (ventanaAncho - 100);
+
+        if (left < 0) {
+            left = 0;
+        } else if (left > ventanaAncho - 100) {
+            left = ventanaAncho - 100;
+        }
+
+        this.nave.style.left = left + 'px';
+        this.nave.style.display = 'block';
+
+        // Mover la nave de manera aleatoria
+        this.intervalId = setInterval(() => {
+            const leftActual = parseFloat(this.nave.style.left);
+            if (leftActual <= 0 || leftActual >= ventanaAncho - 100) {
+                direccion *= -1;
+            }
+            this.nave.style.left = (leftActual + velocidad * direccion) + 'px';
+        }, 50);
+    }
+
+    // Método para disparar proyectiles
+    disparar() {
+        const dispararProyectiles = () => {
+            this.proyectilIntervalId = setInterval(() => {
+                if (!this.destruida) {
+                    this.lanzarProyectil();
+                }
+            }, 200); // Dispara 5 proyectiles por segundo
+
+            setTimeout(() => {
+                clearInterval(this.proyectilIntervalId); // Detiene el disparo después de 2 segundos
+                if (!this.destruida) {
+                    dispararProyectiles(); // Vuelve a disparar si no está destruida
+                }
+            }, 2000);
+        };
+
+        dispararProyectiles();
+    }
+
+    // Método para lanzar proyectiles desde la nave enemiga
+    lanzarProyectil() {
+        if (!this.destruida) {
+            var proyectil = document.createElement('img');
+            proyectil.classList.add('proyectil');
+            proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
+            proyectil.style.position = 'absolute';
+            proyectil.style.left = (this.nave.offsetLeft + this.nave.clientWidth / 2 - 10) + 'px'; // Centrado horizontalmente
+            proyectil.style.top = (this.nave.offsetTop + this.nave.clientHeight) + 'px'; // Desde la parte inferior de la nave
+            document.body.appendChild(proyectil);
+
+            function moverProyectil() {
+                var topActual = parseFloat(proyectil.style.top);
+                proyectil.style.top = (topActual + 5) + 'px'; // Velocidad del proyectil
+
+                // Eliminar el proyectil si sale de la pantalla
+                if (topActual > window.innerHeight) {
+                    proyectil.remove();
+                    clearInterval(intervalId);
+                }
+            }
+
+            var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
+
+            // Detectar colisión con misiles del jugador
+            var misiles = document.querySelectorAll('.animated-element');
+            misiles.forEach(misil => {
+                var misilRect = misil.getBoundingClientRect();
+                if (
+                    misilRect.left < proyectil.getBoundingClientRect().right &&
+                    misilRect.right > proyectil.getBoundingClientRect().left &&
+                    misilRect.top < proyectil.getBoundingClientRect().bottom &&
+                    misilRect.bottom > proyectil.getBoundingClientRect().top &&
+                    !this.collisionCooldown // Verificar que no esté en cooldown de colisión
+                ) {
+                    misil.remove();
+                    proyectil.remove();
+                    clearInterval(intervalId);
+                    this.golpesRecibidos++; // Incrementar el contador de golpes
+
+                    // Si se reciben 3 golpes, destruir la nave
+                    if (this.golpesRecibidos >= 3) {
+                        this.destruir();
+                    } else {
+                        this.collisionCooldown = true; // Activar el cooldown de colisión
+                        setTimeout(() => {
+                            this.collisionCooldown = false; // Desactivar el cooldown después de 1 segundo
+                        }, 1000);
+                    }
+                }
+            });
+        }
+    }
+
+    // Método para destruir la nave enemiga
+    destruir() {
+        this.destruida = true;
+        clearInterval(this.intervalId); // Detener el movimiento de la nave
+        clearInterval(this.proyectilIntervalId); // Detener el lanzamiento de proyectiles
+        this.nave.remove(); // Eliminar la nave de la pantalla
+    }
+}
+
+// Función para crear el enemigo único
+function crearEnemigoUnico() {
+    var enemigoUnico = new EnemigoUnico();
+    return enemigoUnico;
+}
