@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mover() {
             const ventanaAncho = window.innerWidth;
             const referenciaAncho = 1920; // Ancho de referencia para la resolución Full HD
-            const factorEscala = referenciaAncho / ventanaAncho; // Inverso del factor de escala
+            const factorEscala = ventanaAncho / referenciaAncho; // Inverso del factor de escala
         
             let direccion = Math.random() < 0.5 ? -1 : 1;
             const velocidad = (Math.random() * 5 + 3) * factorEscala; // Ajustamos la velocidad según el factor de escala
@@ -471,7 +471,7 @@ class EnemigoUnico {
     mover() {
         const ventanaAncho = window.innerWidth;
         const referenciaAncho = 1920; // Ancho de referencia para la resolución Full HD
-        const factorEscala = referenciaAncho / ventanaAncho; // Inverso del factor de escala
+        const factorEscala = ventanaAncho / referenciaAncho; // Inverso del factor de escala
     
         let direccion = Math.random() < 0.5 ? -1 : 1;
         const velocidad = 4 * factorEscala; // Ajustamos la velocidad según el factor de escala
