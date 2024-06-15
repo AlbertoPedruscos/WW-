@@ -83,11 +83,6 @@ function puntos(puntos) {
         crearEnemigoUnico();
     }
     else if (puntosT == 5000) {
-        var musica = document.getElementById('musica');
-        musica.pause();
-        musica.currentTime = 0; // Reiniciar la música al principio
-        musica.remove(); // Eliminar completamente el elemento de música del DOM
-
         var musica2 = document.getElementById('musica2');
         musica2.pause();
         musica2.currentTime = 0; // Reiniciar la música al principio
