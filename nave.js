@@ -15,12 +15,12 @@ let ultimate = false;
 let timerId = null;
 
 function puntosUl(puntos) {
-    if (llenando && puntosU < 3000) {
-        puntosU = Math.min(puntosU + puntos, 3000); // Limitar puntosU a un máximo de 300
+    if (llenando && puntosU < 2500) {
+        puntosU = Math.min(puntosU + puntos, 2500); // Limitar puntosU a un máximo de 300
         actualizarFill();
     }
 
-    if (puntosU >= 3000 && !ultimate) { // Solo activar el temporizador si ultimate no está activo
+    if (puntosU >= 2500 && !ultimate) { // Solo activar el temporizador si ultimate no está activo
         llenando = false;
         actualizarFill();
     }
@@ -28,10 +28,10 @@ function puntosUl(puntos) {
 
 function actualizarFillInverso() {
     const fill = document.getElementById('fill');
-    const puntosRestantes = 3000 - puntosU; // Calcular puntos restantes para llenar hasta 300
+    const puntosRestantes = 2500 - puntosU; // Calcular puntos restantes para llenar hasta 300
 
     // Calcular porcentaje de llenado restante
-    const porcentajeRestante = (puntosRestantes / 3000) * 100;
+    const porcentajeRestante = (puntosRestantes / 2500) * 100;
 
     // Calcular el ancho del fill inverso
     const anchoFillInverso = 100 - porcentajeRestante;
@@ -43,7 +43,7 @@ function actualizarFillInverso() {
 
 function actualizarFill() {
     const fill = document.getElementById('fill');
-    const porcentajeLlenado = (puntosU / 3000) * 100;
+    const porcentajeLlenado = (puntosU / 2500) * 100;
     fill.style.width = porcentajeLlenado + '%';
     fill.style.transition = 'width 3s ease';
 }
@@ -72,7 +72,6 @@ function puntos(puntos) {
     document.getElementById('puntos').innerHTML = "Puntuación: " + puntosT + " puntos";
     
     if (puntosT==3000) {
-        // Detener la música cuando se alcanzan 100 puntos
         var musica = document.getElementById('musica');
         musica.pause();
         musica.currentTime = 0; // Reiniciar la música al principio
@@ -96,16 +95,16 @@ function puntos(puntos) {
 
 function ejecutarCada5Segundos() {
     // Aquí va tu condición original
-    if (puntosT > 2900) {
+    if (puntosT > 3000) {
         for (let index = 0; index < 1; index++) {
             crearEnemigoUnico();
         }
     }
-    if (puntosT >= 5000) {
-        for (let index = 0; index < 3; index++) {
-            crearNuevaNaveEnemiga();
-        }
-    }
+    // if (puntosT >= 5000) {
+    //     for (let index = 0; index < 1; index++) {
+    //         crearNuevaNaveEnemiga();
+    //     }
+    // }
 }
 
 // Ejecutar la función inicialmente y luego cada 5 segundos
@@ -280,27 +279,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Evento para detectar colisión con la nave del jugador
     function detectarColision() {
-        var proyectiles = document.querySelectorAll('.proyectil');
-        proyectiles.forEach(function(proyectil) {
+        var naveRect = naveJugador.getBoundingClientRect();
+        var colisionDetectada = Array.from(document.querySelectorAll('.proyectil')).some(proyectil => {
             var proyectilRect = proyectil.getBoundingClientRect();
-            var naveRect = naveJugador.getBoundingClientRect();
-
-            if (
-                proyectilRect.left < naveRect.right &&
-                proyectilRect.right > naveRect.left &&
-                proyectilRect.top < naveRect.bottom &&
-                proyectilRect.bottom > naveRect.top
-            ) {
-                if (ultimate==false){
-                    window.location.href = "derrota.html";
-                }
-                else{
-
-                }
-
-            }
+            return colision(proyectilRect, naveRect);
         });
+    
+        if (colisionDetectada) {
+            if (!ultimate) {
+                window.location.href = "derrota.html";
+            } else {
+                // Lógica adicional si la nave tiene habilidad ultimate activada
+            }
+        }
     }
+    
+    function colision(rect1, rect2) {
+        return rect1.left < rect2.right &&
+               rect1.right > rect2.left &&
+               rect1.top < rect2.bottom &&
+               rect1.bottom > rect2.top;
+    }
+    
 
     setInterval(detectarColision, 20); // Verificar colisión cada 20 ms
 });
@@ -405,13 +405,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         var enemigoCenterX = enemigoRect.left + enemigoRect.width / 2;
                         var enemigoCenterY = enemigoRect.top + enemigoRect.height / 2;
 
-                        if (enemigo.classList.contains('unico2') && impacto!=3){
+                        if (enemigo.classList.contains('unico2') && impacto!=9){
                             animatedElement.remove(); // Eliminar el misil después de la colisión
                             showExplosion(enemigoCenterX - 50, enemigoCenterY - 50); // Mostrar explosión centrada
                             cooldown = false; // Resetear el cooldown después de la colisión
                             impacto=impacto+1;
                         }
-                        else if (enemigo.classList.contains('unico2') && impacto==3){
+                        else if (enemigo.classList.contains('unico2') && impacto==9){
                             animatedElement.remove(); // Eliminar el misil después de la colisión
                             showExplosion(enemigoCenterX - 50, enemigoCenterY - 50); // Mostrar explosión centrada
                             cooldown = false; // Resetear el cooldown después de la colisión
@@ -422,8 +422,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             animatedElement.remove(); // Eliminar el misil después de la colisión
                             showExplosion(enemigoCenterX - 50, enemigoCenterY - 50); // Mostrar explosión centrada
                             cooldown = false; // Resetear el cooldown después de la colisión
-                        }        
-
+                        }
                     }
                 });
 
@@ -472,7 +471,7 @@ class EnemigoUnico2 {
         const factorEscala = ventanaAncho / referenciaAncho; // Inverso del factor de escala
     
         let direccion = Math.random() < 0.5 ? -1 : 1;
-        const velocidad = 6 * factorEscala; // Ajustamos la velocidad según el factor de escala
+        const velocidad = 14 * factorEscala; // Ajustamos la velocidad según el factor de escala
     
         let left = Math.random() * (ventanaAncho - 100);
     
@@ -544,7 +543,7 @@ class EnemigoUnico2 {
                 }
             }
 
-            var intervalId = setInterval(moverProyectil, 5); // Mover el proyectil cada 20 ms
+            var intervalId = setInterval(moverProyectil, 1); // Mover el proyectil cada 20 ms
         }
     }
 
@@ -565,11 +564,7 @@ class EnemigoUnico {
         this.nave.src = 'nave.png'; // Cambia esto por la URL de la imagen de tu enemigo único
         document.body.appendChild(this.nave);
         this.mover();
-        this.intervalId = null;
-        this.proyectilIntervalId = null;
         this.destruida = false;
-        this.golpesRecibidos = 0; // Contador de golpes recibidos
-        this.collisionCooldown = false; // Flag para manejar el cooldown de colisión
         this.disparar(); // Iniciar disparos al crear la nave
     }
 
@@ -578,28 +573,21 @@ class EnemigoUnico {
         const ventanaAncho = window.innerWidth;
         const referenciaAncho = 1920; // Ancho de referencia para la resolución Full HD
         const factorEscala = ventanaAncho / referenciaAncho; // Inverso del factor de escala
-    
+
         let direccion = Math.random() < 0.5 ? -1 : 1;
         const velocidad = 6 * factorEscala; // Ajustamos la velocidad según el factor de escala
-    
+
         let left = Math.random() * (ventanaAncho - 100);
-    
+
         if (left < 0) {
             left = 0;
         } else if (left > ventanaAncho - 100) {
             left = ventanaAncho - 100;
         }
-    
+
         this.nave.style.left = left + 'px';
         this.nave.style.display = 'block';
-    
-        // Lanzar un proyectil cada 2 segundos desde esta nave
-        this.proyectilIntervalId = setInterval(() => {
-            if (!this.destruida) {
-                this.lanzarProyectil();
-            }
-        }, 2000);
-    
+
         // Mover la nave de manera aleatoria
         this.intervalId = setInterval(() => {
             const leftActual = parseFloat(this.nave.style.left);
@@ -610,24 +598,33 @@ class EnemigoUnico {
         }, 50);
     }
 
-    // Método para disparar proyectiles
+    // Método para disparar proyectiles con cooldown
     disparar() {
-        const dispararProyectiles = () => {
-            this.proyectilIntervalId = setInterval(() => {
-                if (!this.destruida) {
-                    this.lanzarProyectil();
-                }
-            }, 200); // Dispara 5 proyectiles por segundo
+        const cicloDisparo = () => {
+            if (this.destruida) return;
+
+            // Disparar proyectiles durante 3 segundos
+            const startDisparar = () => {
+                this.proyectilIntervalId = setInterval(() => {
+                    if (!this.destruida) {
+                        this.lanzarProyectil();
+                    }
+                }, 200); // Dispara 5 proyectiles por segundo
+            };
+
+            startDisparar();
 
             setTimeout(() => {
-                clearInterval(this.proyectilIntervalId); // Detiene el disparo después de 2 segundos
+                clearInterval(this.proyectilIntervalId); // Detener el disparo después de 3 segundos
                 if (!this.destruida) {
-                    dispararProyectiles(); // Vuelve a disparar si no está destruida
+                    setTimeout(() => {
+                        cicloDisparo(); // Volver a disparar después de 2 segundos
+                    }, 2000);
                 }
-            }, 2000);
+            }, 3000);
         };
 
-        dispararProyectiles();
+        cicloDisparo();
     }
 
     // Método para lanzar proyectiles desde la nave enemiga
@@ -653,24 +650,6 @@ class EnemigoUnico {
             }
 
             var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
-
-            // Detectar colisión con misiles del jugador
-            var misiles = document.querySelectorAll('.animated-element');
-            misiles.forEach(misil => {
-                var misilRect = misil.getBoundingClientRect();
-                if (
-                    misilRect.left < proyectil.getBoundingClientRect().right &&
-                    misilRect.right > proyectil.getBoundingClientRect().left &&
-                    misilRect.top < proyectil.getBoundingClientRect().bottom &&
-                    misilRect.bottom > proyectil.getBoundingClientRect().top &&
-                    !this.collisionCooldown // Verificar que no esté en cooldown de colisión
-                ) {
-                    misil.remove();
-                    proyectil.remove();
-                    clearInterval(intervalId);
-                    this.golpesRecibidos++; // Incrementar el contador de golpes
-                }
-            });
         }
     }
 
