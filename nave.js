@@ -51,7 +51,7 @@ function actualizarFill() {
 document.addEventListener('keydown', vaciarUlti);
 
 function vaciarUlti(event) {
-    if (event.code === 'Space' && !ultimate) { // Solo vaciar si ultimate no está activo
+    if (event.code === 'Space' && !ultimate && puntosU===2500) { // Solo vaciar si ultimate no está activo
         clearTimeout(timerId); // Detener el temporizador de activación automática del ultimate
         llenando = true;
         puntosU = 0;
