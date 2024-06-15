@@ -17,6 +17,32 @@ body{
     overflow-x: hidden;
     overflow-y: hidden;
 }
+.circle {
+    width: 5vh; /* Ancho del círculo en función del alto del viewport */
+    height: 5vh; /* Alto del círculo en función del alto del viewport */
+    border-radius: 50%;
+    border: 2px solid #000;
+    position: relative;
+    overflow: hidden;
+}
+.fill {
+    width: 0%;
+    height: 100%;
+    background-color: #FFD700;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.3s ease; /* Transición suave para el efecto de llenado */
+}
+label{
+    margin-right: 2vh;
+    color: #fff700;
+    border: none;
+    font-size: 4vh;
+}
+.borroso {
+    filter: blur(5px); /* Ajusta el valor de blur según la cantidad de desenfoque que desees */
+}
 .nave {
     width: 15vh;
     position: absolute;
@@ -144,7 +170,11 @@ body{
 }
 h2{
     color: red;
-    margin-right: 40vh;
+    margin-right: 30vh;
+}
+
+.unico2{
+    transform: rotate(0deg) !important; /* Rotar la imagen 180 grados */
 }
 
 .final{

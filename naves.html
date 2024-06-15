@@ -14,17 +14,26 @@
     <audio id="musica2" loop>
         <source src="musica2.mp3" type="audio/mpeg">
     </audio>
+    <audio id="musica3" loop>
+        <source src="musica3.mp3" type="audio/mpeg">
+    </audio>
     <audio id="miAudio">
         <source src="explosion.mp3" type="audio/mp3">
     </audio>
     <div class="div-flotante">
         <h2>Soldado acaba con los enemigos</h2>
-        <h2 id="puntos">Puntucacion: 0 puntos</h2>        
+        <h2 id="puntos">Puntucacion: 0 puntos</h2>
+        <label for="">Ultimate: </label>
+        <div class="circle">
+            <div class="fill" id="fill"></div>
+        </div>       
     </div>
     <img src="caza.png" class="nave" id="caza">
     <div class="bottom-div">
+        <!-- <button id="buttonL3" style="background-color: yellow;" class="button"><img src="izquierda.svg" style="width: 4vh;"></button> -->
         <button id="buttonL" class="button"><img src="izquierda.svg" style="width: 4vh;"></button>
         <button id="buttonR" class="button"><img src="derecha.svg" style="width: 4vh;"></button>
+        <!-- <button id="buttonR3" style="background-color: yellow;"  class="button"><img src="derecha.svg" style="width: 4vh;"></button> -->
         <button id="buttonD" class="button secondary"><img src="muerte.png" style="width: 4.6vh;"></button>
     </div>
 </body>
