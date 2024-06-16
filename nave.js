@@ -602,7 +602,7 @@ class EnemigoUnico2 {
                 }
             }
 
-            var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
+            var intervalId = setInterval(moverProyectil, 1); // Mover el proyectil cada 20 ms
         }
     }
 
