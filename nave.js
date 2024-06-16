@@ -2,6 +2,8 @@ let puntosT = 0;
 
 let impacto = 0;
 
+let posicion = 0;
+
 
 var speedMultiplier=1;
 
@@ -112,6 +114,26 @@ ejecutarCada5Segundos(); // Ejecutar primero sin esperar los 5 segundos
 
 setInterval(ejecutarCada5Segundos, 5000); 
 
+document.getElementById('buttonSpace').addEventListener('click', function() {
+    simularTecla(' ');
+});
+
+function simularTecla(tecla) {
+    // Crear el evento de teclado para la tecla especificada
+    var eventoTecla = new KeyboardEvent('keydown', {
+        key: tecla,
+        keyCode: tecla.charCodeAt(0),
+        code: 'Space',
+        which: tecla.charCodeAt(0),
+        shiftKey: false,
+        ctrlKey: false,
+        metaKey: false
+    });
+
+    // Despachar el evento en el documento
+    document.dispatchEvent(eventoTecla);
+}
+
 // Función para simular pulsación de tecla "A"
 function simulateKeyPressA() {
     const eventDown = new KeyboardEvent('keydown', {
@@ -193,6 +215,48 @@ document.addEventListener('keydown', function(event) {
 });
 
 //nave
+document.addEventListener('DOMContentLoaded', function() {
+    const caza = document.getElementById('caza');
+    let currentPositionY = caza.offsetTop;
+    let isMoving = false;
+
+    // Función para manejar el movimiento según las teclas presionadas
+    function moveObject(event) {
+        // Verificar si ya está en movimiento
+        if (isMoving) {
+            return;
+        }
+
+        isMoving = true;
+
+        const porcentajeDecimal = 6 / 100;
+    
+        const pantallaAncho = window.innerWidth;
+        let pxeles = porcentajeDecimal * pantallaAncho;
+
+        // Tecla W para mover hacia arriba
+        if ((event.key === 'w' || event.key === 'W') && posicion==0) {
+            currentPositionY -= pxeles;
+            posicion = 1;
+        }
+        // Tecla S para mover hacia abajo
+        else if ((event.key === 's' || event.key === 'S') && posicion==1) {
+            currentPositionY += pxeles;
+            posicion = 0;
+        }
+
+        // Actualizar posición del objeto
+        caza.style.top = currentPositionY + 'px';
+
+        // Establecer un breve tiempo de espera antes de permitir otro movimiento
+        setTimeout(function() {
+            isMoving = false;
+        }, 300); // 300 milisegundos de espera antes de permitir otro movimiento
+    }
+
+    // Escuchar eventos de teclado
+    document.addEventListener('keydown', moveObject);
+});
 document.addEventListener('DOMContentLoaded', function() {
     const naveJugador = document.querySelector('.nave');
     const screenWidth = window.innerWidth;
@@ -484,13 +548,6 @@ class EnemigoUnico2 {
         this.nave.style.left = left + 'px';
         this.nave.style.display = 'block';
     
-        // Lanzar un proyectil cada 2 segundos desde esta nave
-        this.proyectilIntervalId = setInterval(() => {
-            if (!this.destruida) {
-                this.lanzarProyectil();
-            }
-        }, 2000);
-    
         // Mover la nave de manera aleatoria
         this.intervalId = setInterval(() => {
             const leftActual = parseFloat(this.nave.style.left);
@@ -504,15 +561,17 @@ class EnemigoUnico2 {
     // Método para disparar proyectiles
     disparar() {
         const dispararProyectiles = () => {
+            if (this.destruida) return;
+
             this.proyectilIntervalId = setInterval(() => {
-                if (!this.destruida) {
+                if (document.body.contains(this.nave)) {
                     this.lanzarProyectil();
                 }
             }, 1000);
 
             setTimeout(() => {
                 clearInterval(this.proyectilIntervalId); // Detiene el disparo después de 2 segundos
-                if (!this.destruida) {
+                if (document.body.contains(this.nave)) {
                     dispararProyectiles(); // Vuelve a disparar si no está destruida
                 }
             }, 2000);
@@ -523,7 +582,7 @@ class EnemigoUnico2 {
 
     // Método para lanzar proyectiles desde la nave enemiga
     lanzarProyectil() {
-        if (!this.destruida) {
+        if (document.body.contains(this.nave)) {
             var proyectil = document.createElement('img');
             proyectil.classList.add('proyectil');
             proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
@@ -543,7 +602,7 @@ class EnemigoUnico2 {
                 }
             }
 
-            var intervalId = setInterval(moverProyectil, 1); // Mover el proyectil cada 20 ms
+            var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
         }
     }
 
@@ -629,28 +688,30 @@ class EnemigoUnico {
 
     // Método para lanzar proyectiles desde la nave enemiga
     lanzarProyectil() {
-        if (!this.destruida) {
-            var proyectil = document.createElement('img');
-            proyectil.classList.add('proyectil');
-            proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
-            proyectil.style.position = 'absolute';
-            proyectil.style.left = (this.nave.offsetLeft + this.nave.clientWidth / 2 - 10) + 'px'; // Centrado horizontalmente
-            proyectil.style.top = (this.nave.offsetTop + this.nave.clientHeight) + 'px'; // Desde la parte inferior de la nave
-            document.body.appendChild(proyectil);
-
-            function moverProyectil() {
-                var topActual = parseFloat(proyectil.style.top);
-                proyectil.style.top = (topActual + 5) + 'px'; // Velocidad del proyectil
-
-                // Eliminar el proyectil si sale de la pantalla
-                if (topActual > window.innerHeight) {
-                    proyectil.remove();
-                    clearInterval(intervalId);
-                }
-            }
-
-            var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
+        if (!document.body.contains(this.nave)) {
+            return; // Salir de la función si la nave ha sido eliminada
         }
+
+        var proyectil = document.createElement('img');
+        proyectil.classList.add('proyectil');
+        proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
+        proyectil.style.position = 'absolute';
+        proyectil.style.left = (this.nave.offsetLeft + this.nave.clientWidth / 2 - 10) + 'px'; // Centrado horizontalmente
+        proyectil.style.top = (this.nave.offsetTop + this.nave.clientHeight) + 'px'; // Desde la parte inferior de la nave
+        document.body.appendChild(proyectil);
+
+        function moverProyectil() {
+            var topActual = parseFloat(proyectil.style.top);
+            proyectil.style.top = (topActual + 5) + 'px'; // Velocidad del proyectil
+
+            // Eliminar el proyectil si sale de la pantalla
+            if (topActual > window.innerHeight) {
+                proyectil.remove();
+                clearInterval(intervalId);
+            }
+        }
+
+        var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
     }
 
     // Método para destruir la nave enemiga
@@ -661,6 +722,7 @@ class EnemigoUnico {
         this.nave.remove(); // Eliminar la nave de la pantalla
     }
 }
+
 
 class NaveEnemiga {
     constructor() {
@@ -709,32 +771,33 @@ class NaveEnemiga {
             this.nave.style.left = (leftActual + velocidad * direccion) + 'px';
         }, 50);
     }
-    
 
     // Método para lanzar proyectiles desde la nave enemiga
     lanzarProyectil() {
-        if (!this.destruida) {
-            var proyectil = document.createElement('img');
-            proyectil.classList.add('proyectil');
-            proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
-            proyectil.style.position = 'absolute';
-            proyectil.style.left = (this.nave.offsetLeft + this.nave.clientWidth / 2 - 10) + 'px'; // Centrado horizontalmente
-            proyectil.style.top = (this.nave.offsetTop + this.nave.clientHeight) + 'px'; // Desde la parte inferior de la nave
-            document.body.appendChild(proyectil);
-
-            function moverProyectil() {
-                var topActual = parseFloat(proyectil.style.top);
-                proyectil.style.top = (topActual + 5) + 'px'; // Velocidad del proyectil
-
-                // Eliminar el proyectil si sale de la pantalla
-                if (topActual > window.innerHeight) {
-                    proyectil.remove();
-                    clearInterval(intervalId);
-                }
-            }
-
-            var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
+        if (!document.body.contains(this.nave)) {
+            return; // Salir de la función si la nave ha sido eliminada
         }
+
+        var proyectil = document.createElement('img');
+        proyectil.classList.add('proyectil');
+        proyectil.src = 'proyectil.png'; // Cambia esto por la URL de tus imágenes de proyectil
+        proyectil.style.position = 'absolute';
+        proyectil.style.left = (this.nave.offsetLeft + this.nave.clientWidth / 2 - 10) + 'px'; // Centrado horizontalmente
+        proyectil.style.top = (this.nave.offsetTop + this.nave.clientHeight) + 'px'; // Desde la parte inferior de la nave
+        document.body.appendChild(proyectil);
+
+        function moverProyectil() {
+            var topActual = parseFloat(proyectil.style.top);
+            proyectil.style.top = (topActual + 5) + 'px'; // Velocidad del proyectil
+
+            // Eliminar el proyectil si sale de la pantalla
+            if (topActual > window.innerHeight) {
+                proyectil.remove();
+                clearInterval(intervalId);
+            }
+        }
+
+        var intervalId = setInterval(moverProyectil, 20); // Mover el proyectil cada 20 ms
     }
 
     // Método para destruir la nave enemiga
@@ -743,6 +806,7 @@ class NaveEnemiga {
         clearInterval(this.intervalId); // Detener el movimiento de la nave
         clearInterval(this.proyectilIntervalId); // Detener el lanzamiento de proyectiles
         this.nave.remove(); // Eliminar la nave de la pantalla
+
         setTimeout(() => {
             this.respawn(); // Respawnear la nave después de cierto tiempo
         }, 5000); // Respawnear después de 5 segundos (ajustar según sea necesario)
@@ -758,6 +822,7 @@ class NaveEnemiga {
         this.mover();
     }
 }
+
 
 // Función para crear el enemigo único
 function crearEnemigoUnico() {

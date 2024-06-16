@@ -79,7 +79,6 @@ label{
     outline: none;
 }
 .play-button-container {
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -234,5 +233,18 @@ h2{
     
     #puntos2{
         font-size: 4vh;
+    }
+    .circle {
+        width: 2vh; /* Ancho del círculo en función del alto del viewport */
+        height: 2vh; /* Alto del círculo en función del alto del viewport */
+    }
+    label{
+        font-size: 2vh;
+    }
+    #te{
+        display: none;
+    }
+    .play-button {
+        font-size: 2rem;
     }
 }
