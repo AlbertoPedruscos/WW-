@@ -22,7 +22,7 @@ let fases = 1;
 
 var generacion=5;
 let llenando = true;
-let ultimate = false;
+let ultimate = true;
 let timerId = null;  
 
 function checkCollisionAndChangePage() {
