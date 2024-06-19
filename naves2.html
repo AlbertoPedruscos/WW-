@@ -9,7 +9,7 @@
 </head>
 <body>
     <audio id="musica" loop autoplay>
-        <source src="musica.mp3" type="audio/mpeg">
+        <source src="musica2.mp3" type="audio/mpeg">
     </audio>
     <audio id="miAudio">
         <source src="explosion.mp3" type="audio/mp3">
@@ -36,7 +36,7 @@
 let puntosT = 0;
 let puntosU = 0;
 
-var level = 1;
+var level = 2;
 
 window.onpageshow = function(event) {
     if (event.persisted) {
@@ -44,13 +44,32 @@ window.onpageshow = function(event) {
     }
 };
 
+// Function to update points and display them
 function puntos(puntos) {
     puntosT = puntosT + puntos;
     document.getElementById('puntos').innerHTML = "Puntuación: " + puntosT + " puntos";
-    
-    if (puntosT==1000) {
-        window.location.href = "naves2.html";
+    if (puntosT==2000) {
+        window.location.href = "naves3.html";
     }
 }
+
+function ejecutarCada5Segundos() {
+    // Aquí va tu condición original
+    if (puntosT > 0) {
+        for (let index = 0; index < 1; index++) {
+            crearEnemigoUnico();
+        }
+    }
+    // if (puntosT >= 5000) {
+    //     for (let index = 0; index < 1; index++) {
+    //         crearNuevaNaveEnemiga();
+    //     }
+    // }
+}
+
+// Ejecutar la función inicialmente y luego cada 5 segundos
+ejecutarCada5Segundos(); // Ejecutar primero sin esperar los 5 segundos
+
+setInterval(ejecutarCada5Segundos, 5000); 
 </script>
 <script src="nave.js"></script>

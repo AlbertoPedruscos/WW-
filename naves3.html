@@ -9,7 +9,7 @@
 </head>
 <body>
     <audio id="musica" loop autoplay>
-        <source src="musica.mp3" type="audio/mpeg">
+        <source src="musica3.mp3" type="audio/mpeg">
     </audio>
     <audio id="miAudio">
         <source src="explosion.mp3" type="audio/mp3">
@@ -36,7 +36,7 @@
 let puntosT = 0;
 let puntosU = 0;
 
-var level = 1;
+var level = 3;
 
 window.onpageshow = function(event) {
     if (event.persisted) {
@@ -44,12 +44,12 @@ window.onpageshow = function(event) {
     }
 };
 
+// Function to update points and display them
 function puntos(puntos) {
     puntosT = puntosT + puntos;
     document.getElementById('puntos').innerHTML = "Puntuación: " + puntosT + " puntos";
-    
-    if (puntosT==1000) {
-        window.location.href = "naves2.html";
+    if (puntosT==100) {
+        crearEnemigoUnico2();
     }
 }
 </script>

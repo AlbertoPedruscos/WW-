@@ -84,6 +84,13 @@ label{
     height: 100%;
     width: 100%;
 }
+.efinal{
+    transform: rotate(0deg);
+}
+.efinal2{
+    width: 40vh;
+    height: 20vh;
+}
 .bottom-div {
     background-image: url(madera.jpg);
     background-size: cover;
@@ -174,6 +181,16 @@ h2{
 
 .unico2{
     transform: rotate(0deg) !important; /* Rotar la imagen 180 grados */
+}
+
+.img-dinamica {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 2s ease; /* Animación de 2 segundos */
+    width: 20vh;
+    height: 20vh;
 }
 
 .final{

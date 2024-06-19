@@ -7,15 +7,22 @@
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="logo.webp" type="image/x-icon">
 </head>
+<style>
+    .fill {
+        width: 100%;
+    }
+</style>
 <body>
     <audio id="musica" loop autoplay>
-        <source src="musica.mp3" type="audio/mpeg">
+        <source src="musicaFinal1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="musica2" loop>
+        <source src="musicaFinal2.mp3" type="audio/mpeg">
     </audio>
     <audio id="miAudio">
         <source src="explosion.mp3" type="audio/mp3">
     </audio>
     <div class="div-flotante">
-        <h2 id="te">Soldado acaba con los enemigos</h2>
         <h2 id="puntos">Puntucacion: 0 puntos</h2>
         <label for="">Ultimate: </label>
         <div class="circle">
@@ -34,23 +41,19 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 let puntosT = 0;
-let puntosU = 0;
+let puntosU = 2500;
 
-var level = 1;
+var level = 6;
 
 window.onpageshow = function(event) {
     if (event.persisted) {
         window.location.reload();
     }
-};
+}
 
 function puntos(puntos) {
     puntosT = puntosT + puntos;
     document.getElementById('puntos').innerHTML = "Puntuación: " + puntosT + " puntos";
-    
-    if (puntosT==1000) {
-        window.location.href = "naves2.html";
-    }
 }
 </script>
 <script src="nave.js"></script>
